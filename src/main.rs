@@ -15,7 +15,6 @@ fn main(){
         let mut input = String::new();
         stdin().read_line(&mut input).unwrap();
 
-        // must be peekable so we know when we are on the last command
         let mut commands = input.trim().split(" | ").peekable();
         let mut previous_command = None;
 
@@ -45,12 +44,8 @@ fn main(){
                         );
 
                     let stdout = if commands.peek().is_some() {
-                        // there is another command piped behind this one
-                        // prepare to send output to the next command
                         Stdio::piped()
                     } else {
-                        // there are no more commands piped behind this one
-                        // send output to shell stdout
                         Stdio::inherit()
                     };
 
@@ -72,7 +67,6 @@ fn main(){
         }
 
         if let Some(mut final_command) = previous_command {
-            // block until the final command has finished
             let _ = final_command.wait();
         }
 
